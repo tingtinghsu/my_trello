@@ -1,4 +1,12 @@
-<div class="flex my-2">
+<div class="flex my-2" id="list" data-lists="<%= @lists.to_json(include: :cards) %>">
+  <div class="bg-gray-200 mx-2 w-64 rounded-md" v-for="list in lists">
+    <h2 class="px-3 py-1 font-bold">{{ list.name }}</h2>
+  </div>
+</div>
+
+<br>
+
+<!-- <div class="flex my-2">
   <% @lists.each do |list| %>
     <div class="bg-gray-200 mx-2 w-64 rounded-md">
       <tr>
@@ -12,7 +20,7 @@
       </tr>
     </div>
   <% end %>
-</div>
+</div> -->
 
 
 <br>
