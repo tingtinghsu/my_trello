@@ -7,8 +7,11 @@
       <Card v-for="card in cards" :card="card" :key="card.id" ></Card>
       <!-- 卡片最下方可新增卡片 -->
       <div class="input-area">
-        <textarea class="content" v-model="content"></textarea>
-        <button class="card-button" @click="createCard">新增卡片</button>
+        <button v-if="!editing" class="card-button bg-blue-200" @click="newCard">新增卡片</button>
+
+        <textarea v-if="editing" class="content" v-model="content"></textarea>
+        <button v-if="editing" class="card-button bg-blue-400" @click="createCard">建立卡片</button>
+        <button v-if="editing" class="card-button bg-red-400" @click="editing = false">取消</button>        
       </div>
     </div>
   </div>
@@ -24,10 +27,16 @@
     data: function(){
       return {
         content: '',
-        cards: this.list.cards // cardset的`v-for`就可以改成cards
+        cards: this.list.cards, // cardset的`v-for`就可以改成cards
+        editing: false // 預設輸入框不顯示
       }
     },
     methods: {
+      newCard(event){
+        event.preventDefault();
+        this.editing = true;
+      },
+
       createCard(event){
         event.preventDefault();
         // console.log(this.content)
@@ -51,6 +60,7 @@
             console.log(err)
           }
         });
+        this.editing = false;        
       }
     }
   }
@@ -77,10 +87,7 @@
         }
       }
       .card-button {
-      @apply .mx-1 .px-2 .py-1 .bg-blue-300 .rounded-md .text-sm .text-gray-800 .font-thin;
-        &:hover {
-          @apply .bg-blue-400;
-        }
+        @apply .mx-1 .px-2 .py-1 .rounded-md .text-sm .text-gray-800 .font-thin;
       }
     }
   }
