@@ -1,5 +1,8 @@
-<div class="flex my-2" id="show-list" data-lists="<%= @lists.to_json(include: :cards) %>">
-  <List v-for="list in lists" :list="list" :key="list.id"></List>
+<div class="my-2" id="show-list" data-lists="<%= @lists.to_json(include: :cards) %>">
+  <!-- 綁定v-model: 拖完之後，資料也跟著改變位置 -->  
+  <draggable v-model="lists" class="flex" @change="listMoved">
+    <List v-for="list in lists" :list="list" :key="list.id"></List>
+  </draggable>
   <!-- 把component的資料餵給html -->
 </div>
 

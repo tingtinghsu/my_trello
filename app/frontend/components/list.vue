@@ -40,11 +40,11 @@
       createCard(event){
         event.preventDefault();
         // console.log(this.content)
-      let data = new FormData();
-      // 準備好一包資料（把新增的資料接到原本資料的後面）
-      data.append("card[list_id]", this.list.id);
-      data.append("card[name]", this.content);
-      Rails.ajax({
+        let data = new FormData();
+        // 準備好一包資料（把新增的資料接到原本資料的後面）
+        data.append("card[list_id]", this.list.id);
+        data.append("card[name]", this.content);
+        Rails.ajax({
           url: '/cards',
           type: 'POST',
           data,
