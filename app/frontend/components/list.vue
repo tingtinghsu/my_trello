@@ -4,7 +4,10 @@
 
     <div class="cardset">
       <!-- lists: html @lists.to_json(include: :cards), 所以我們已經有cards可以利用 -->
-      <Card v-for="card in cards" :card="card" :key="card.id" ></Card>
+      
+      <draggable v-model="cards" ghost-class="ghost" group="list" @change="cardMoved">
+        <Card v-for="card in cards" :card="card" :key="card.id" ></Card>
+      </draggable>
       <!-- 卡片最下方可新增卡片 -->
       <div class="input-area">
         <button v-if="!editing" class="card-button bg-blue-200" @click="newCard">新增卡片</button>
@@ -20,10 +23,12 @@
 <script>
   import Rails from '@rails/ujs';
   import Card from 'components/card';
+  import draggable from 'vuedraggable';
+
   export default {              
     name: 'List',
     props: ["list"], // property
-    components: { Card },
+    components: { Card, draggable },
     data: function(){
       return {
         content: '',
@@ -32,6 +37,39 @@
       }
     },
     methods: {
+      cardMoved(event){
+        // event.preventDefault();
+        console.log(event)
+        let evt = event.added || event.moved;
+        if (evt) {
+          // 先透過element確定哪張卡片被移
+          let el = evt.element;
+          // 把id存起來
+          let card_id = el.id;
+
+          console.log(card_id);
+          // 準備一包FormData
+          let data = new FormData();
+          // 找到card在哪個list (可能是新移動的list，或是原本的list)
+          data.append("card[list_id]", this.list.id);
+          // acts as list 的 position：從1開始算，移動到新的位置
+          data.append("card[position]", evt.newIndex + 1);
+          Rails.ajax({
+            // cards/2/move
+            // 打到cards[編號為新移動完的序列]，那筆資料的id
+            url: `/cards/${card_id}/move`,
+            type: 'PUT',
+            data,
+            dataType: 'json',
+            success: response => {
+              console.log(response);
+            },
+            error: error => {
+              console.log(error);
+            }
+          })
+        }
+      },
       newCard(event){
         event.preventDefault();
         this.editing = true;
@@ -67,6 +105,9 @@
 </script>
 
 <style lang="scss" scoped>
+.ghost {
+  @apply .border-2 .border-blue-400 .border-dashed;
+}
 .list {
   @apply .bg-gray-200 .mx-2 .w-64 .rounded-md;
   

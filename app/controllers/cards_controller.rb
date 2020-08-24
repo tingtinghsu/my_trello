@@ -1,5 +1,5 @@
 class CardsController < ApplicationController
-  before_action :set_card, only: [:show, :edit, :update, :destroy]
+  before_action :set_card, only: [:show, :edit, :update, :destroy, :move]
 
   # GET /cards
   # GET /cards.json
@@ -7,6 +7,10 @@ class CardsController < ApplicationController
     @cards = Card.all
   end
 
+  def move
+    @card.update(card_params)
+    render 'show.json'
+  end
   # GET /cards/1
   # GET /cards/1.json
   def show
